@@ -1,0 +1,14 @@
+
+<a href="http://192.168.99.100:90">HAProxy Stats</a> <br />
+
+Load Balanced NGINX Endpoint (this, port 80) <br />
+&nbsp;&nbsp;<a href="http://192.168.99.100:81">NGINX 1 (81)</a> <br />
+&nbsp;&nbsp;<a href="http://192.168.99.100:82">NGINX 2 (82)</a> <br />
+
+<a href="http://192.168.99.100:9983">Load Balanced Apache Solr Endpoint (9983)</a> <br />
+&nbsp;&nbsp;<a href="http://192.168.99.100:8983">Solr 1 (8983)</a> <br />
+&nbsp;&nbsp;<a href="http://192.168.99.100:8984">Solr 2 (8984)</a> <br />
+
+<p>
+    <a href="[IP_ADDRESS]:9983/solr/collection1/select?q=*:*&shards.info=true">Solr Query Showing Distributed Data:</a>
+</p>
