@@ -21,8 +21,6 @@ docker-compose up -d
 
 echo containers started.
 
-echo Go to http://$HOST_IP:9000 in your browser.
-
 echo waiting 5 seconds...
 sleep 5
 echo Creating a 2 shard Solr collection.
@@ -37,5 +35,10 @@ echo To bring containers back up, run:
 echo docker-compose up -d
 echo See docker compose documentation for further information.
 
+echo Go to http://$HOST_IP:9000 in your browser to access the Docker UI.
+echo "Go to http://$HOST_IP:9000/#/containers_network in your browser to view networking."
+echo "Go to http://$HOST_IP:90 to view HA Proxy Stats"
+echo "Go to http://$HOST_IP:9983 to access load balanced Solr endpoint."
+echo "Go to http://$HOST_IP to access load balanced NGINX endpoint."
 ### Connect To It
 #eval "$(docker-machine env $APP_NAME)"
