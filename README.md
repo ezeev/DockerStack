@@ -1,7 +1,7 @@
 
 ## Docker Stack
 
-Create a distributed datacenter on your local machine using Docker containers. This repo is a starting point for building distributed apps using an array of different networked service
+Create a distributed datacenter on your local machine using Docker containers. This repo is a starting point for building distributed apps using an array of different networked services
 
 Current containers include:
 - 1 HA Proxy (load balancing)
