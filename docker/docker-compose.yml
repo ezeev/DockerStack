@@ -8,6 +8,15 @@ dockerui:
     - /var/run/docker.sock:/var/run/docker.sock
   image: dockerui/dockerui
 
+statsd:
+  container_name: statsd
+  ports:
+    - "8125:8125/udp"
+  volumes:
+    - ../statsd/config.js:/opt/statsd/config.js
+    - ../statsd/backends/wavefront.js:/opt/statsd/backends/wavefront.js
+  image: ezeev/statsd
+
 web01:
   container_name: web01
   ports:
@@ -103,5 +112,9 @@ solr2:
     - "8984:8983"
   command: bin/solr -f -c -z "zoo1:2181,zoo2:2181,zoo3:2181"
   
-  
+wavefront:
+    image: ezeev/wavefront
+    container_name: wavefront
+    ports:
+     - "4242:4242"
   

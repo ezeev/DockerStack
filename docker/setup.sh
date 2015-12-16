@@ -7,6 +7,8 @@ docker-machine create --driver virtualbox --virtualbox-memory 8096 $APP_NAME
 ### Get The IP
 HOST_IP=$(docker-machine ip $APP_NAME)
 
+eval "$(docker-machine env $APP_NAME)"
+
 echo Docker host $APP_NAME has been created at $HOST_IP
 
 echo Building custom images.
@@ -14,6 +16,7 @@ echo Building custom images.
 docker build -f="zookeeper/Dockerfile" -t="ezeev/zookeeper" .
 docker build -f="solr/Dockerfile" -t="ezeev/solr" .
 docker build -f="nodejs/Dockerfile" -t="ezeev/node" .
+docker build -f="wavefront/Dockerfile" -t="ezeev/wavefront" .
 
 echo Starting containers.
 

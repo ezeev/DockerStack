@@ -1,0 +1,2 @@
+## Send a Metric
+echo "gauge1_t_tag1_v_v1_t_tag2_v_v2:+3|g" | nc -u -w0 192.168.99.100 8125
