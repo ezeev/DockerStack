@@ -1,4 +1,16 @@
-#docker run -d -p 9000:9000 --privileged -v /var/run/docker.sock:/var/run/docker.sock dockerui/dockerui
+
+
+wavefront:
+  container_name: wavefront
+  ports:
+    - "3878:3878"
+    - "2878:2878"
+    - "4242:4242"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  image: ezeev/wavefront
+  hostname: evan.macbook.dockerhost
+
 dockerui:
   container_name: dockui
   ports:
@@ -112,9 +124,4 @@ solr2:
     - "8984:8983"
   command: bin/solr -f -c -z "zoo1:2181,zoo2:2181,zoo3:2181"
   
-wavefront:
-    image: ezeev/wavefront
-    container_name: wavefront
-    ports:
-     - "4242:4242"
   

@@ -101,6 +101,6 @@ Optional Variables:
   port: 8125
 , backends: ["./backends/wavefront"]
 , dumpMessages: true
-, wavefrontServer: "metrics.wavefront.com"
-, wavefrontAuthToken: "393b1cc3-15ac-485b-b635-1ab7f8a2a2c3"
+, wavefrontProxyServer: "192.168.99.100"
+, wavefrontProxyPort: 3878
 }

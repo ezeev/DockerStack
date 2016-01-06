@@ -2,18 +2,63 @@
 
 var util = require('util');
 var net = require('net');
-var https = require('https');
+var http = require('http');
     
 function WavefrontBackend(startupTime, config, emitter){
   var self = this;
  
-  this.wavefrontServer = config.wavefrontServer;
-  this.wavefrontAuthToken = config.wavefrontAuthToken;
+  this.wavefrontProxyServer = config.wavefrontProxyServer;
+  this.wavefrontProxyPort = config.wavefrontProxyPort;
     
   this.lastFlush = startupTime;
   this.lastException = startupTime;
   this.config = config.console || {};
 
+    
+    
+  this.parseTags = function(metricName) {
+        var tags = {};
+        var strTags = metricName.split("_t_");
+        try {
+            for (var i=1;i<strTags.length;i++) {
+                var tagAndVal = strTags[i].split("_v_");
+                var tag = tagAndVal[0];
+                var val = tagAndVal[1];
+                tags[tag] = val;
+            }
+        } catch(e) {
+            console.log("ERROR parsing tags. If using tags, make sure each tag has a value.");
+            console.log(e);
+        }
+        return tags;
+    }    
+    
+    
+  this.postStats = function (metricsJSON, wfProxy, wfPort) {
+    
+    var metricsString = JSON.stringify(metricsJSON);
+    //console.log(body);
+    var request = http.request(
+        {
+            hostname: wfProxy,
+            //path: '/report/metrics?h=evan.wfproxy1',
+            port: wfPort,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(metricsString)
+            }   
+        }
+    );
+    
+    request.on('error', function(e) {
+        console.log(e);
+    });
+    
+    request.end(metricsString);
+}
+  
+  
   // attach
   emitter.on('flush', function(timestamp, metrics) { 
       self.flush(timestamp, metrics);
@@ -21,46 +66,8 @@ function WavefrontBackend(startupTime, config, emitter){
   emitter.on('status', function(callback) { self.status(callback); });
 }
 
-/*var body = JSON.stringify({
-      "test.metric2": {
-        "value": 2,
-        "tags": {
-          "key1": "v1",
-          "key2": "v2"
-        }
-      }
-})*/
-
-
-var postStats = function wavefrontPostStats(metricsJSON, wfServer, wfToken) {
-    
-    var metricsString = JSON.stringify(metricsJSON);
-    //console.log(body);
-    var request = https.request(
-        {
-            hostname: wfServer,
-            path: '/report/metrics?h=evan.wfproxy1',
-            port: 443,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-AUTH-TOKEN': wfToken,
-                'Content-Length': Buffer.byteLength(metricsString)
-            }   
-        }
-    );
-    
-    request.on('error', function(e) {
-       console.log(e); 
-    });
-    
-    request.end(metricsString);
-}
-
 WavefrontBackend.prototype.flush = function(timestamp, metrics, wfServer, wfToken) {
-  console.log('Flushing stats at ', new Date(timestamp * 1000).toString());
-  console.log("Wavefront Server: " + this.wavefrontServer);
-        
+  console.log('Flushing stats at ', new Date(timestamp * 1000).toString());      
   var out = {
     counters: metrics.counters,
     timers: metrics.timers,
@@ -78,18 +85,6 @@ WavefrontBackend.prototype.flush = function(timestamp, metrics, wfServer, wfToke
 
     pctThreshold: metrics.pctThreshold
   };
-
-    function parseTags(metricName) {
-        var tags = {};
-        var strTags = metricName.split("_t_");
-        for (var i=1;i<strTags.length;i++) {
-            var tagAndVal = strTags[i].split("_v_");
-            var tag = tagAndVal[0];
-            var val = tagAndVal[1];
-            tags[tag] = val;
-        }
-        return tags;
-    }
     
     var keys = Object.keys(out)
     var data = {};
@@ -107,14 +102,11 @@ WavefrontBackend.prototype.flush = function(timestamp, metrics, wfServer, wfToke
             var tags = {};
             var finalMetricName = metricName.toString();
             if (metricName.indexOf("_t_") > -1) {
-                var tags = parseTags(metricName);
+                var tags = this.parseTags(metricName);
                 finalMetricName = metricName.split("_t_")[0];
                 //console.log("What is this:" + metricName.split("_t_")[0]);
             }
-            //if this is a counter_rate, append ".rate" to the metric name
-            //if (key == "counter_rates") finalMetricName = finalMetricName+".rate";
             finalMetricName = key+"."+finalMetricName;
-            //console.log(finalMetricName + ":" + metricValue);
             dataVal = {};
             dataVal["value"] = metricValue    
             data[finalMetricName] = dataVal;
@@ -123,15 +115,14 @@ WavefrontBackend.prototype.flush = function(timestamp, metrics, wfServer, wfToke
       }
         
     }
-    console.log("Posting metrics to Wavefront API. " + this.wavefrontServer);
-    console.log(data);
-    postStats(data, this.wavefrontServer,this.wavefrontAuthToken);
+    console.log("Posting metrics to Wavefront Proxy at " + this.wavefrontProxyServer + ":" + this.wavefrontProxyPort);
+    this.postStats(data, this.wavefrontProxyServer,this.wavefrontProxyPort);
     
   if(this.config.prettyprint) {
-    //console.log(util.inspect(out, {depth: 5, colors: true}));
+    console.log(util.inspect(out, {depth: 5, colors: true}));
+    console.log("Wavefront JSON String:" + JSON.stringify(data));
   } else {
-    //PARSE HERE!
-    //console.log(out);
+    console.log("Wavefront JSON String:" + JSON.stringify(data));
   }
 
 };
