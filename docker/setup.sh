@@ -17,6 +17,7 @@ docker build -f="zookeeper/Dockerfile" -t="ezeev/zookeeper" .
 docker build -f="solr/Dockerfile" -t="ezeev/solr" .
 docker build -f="nodejs/Dockerfile" -t="ezeev/node" .
 docker build -f="wavefront/Dockerfile" -t="ezeev/wavefront" .
+docker build -f="statsd/Dockerfile" -t="ezeev/statsd" .
 
 echo Starting containers.
 
@@ -45,3 +46,16 @@ echo "Go to http://$HOST_IP:9983 to access load balanced Solr endpoint."
 echo "Go to http://$HOST_IP to access load balanced NGINX endpoint."
 ### Connect To It
 #eval "$(docker-machine env $APP_NAME)"
+
+docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:rw \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  google/cadvisor:latest \
+  -storage_driver=statsd \
+  -storage_driver_host=192.168.99.100:8125 \
+  -storage_driver_db=docker_node_001

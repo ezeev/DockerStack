@@ -1,5 +1,4 @@
 
-
 wavefront:
   container_name: wavefront
   ports:
