@@ -16,6 +16,10 @@ RUN git clone https://github.com/etsy/statsd.git
 
 WORKDIR /opt/statsd
 
+# Download The Wavefront Backend
+RUN curl -o backends/wavefront.js https://raw.githubusercontent.com/wavefrontHQ/StatsD/master/backends/wavefront.js
+RUN curl -o config.js https://raw.githubusercontent.com/wavefrontHQ/StatsD/master/config.js
+
 EXPOSE 8125
 
 CMD ["node","stats.js","/opt/statsd/config.js"]

@@ -17,7 +17,8 @@ docker build -f="zookeeper/Dockerfile" -t="ezeev/zookeeper" .
 docker build -f="solr/Dockerfile" -t="ezeev/solr" .
 docker build -f="nodejs/Dockerfile" -t="ezeev/node" .
 docker build -f="wavefront/Dockerfile" -t="ezeev/wavefront" .
-docker build -f="statsd/Dockerfile" -t="ezeev/statsd" .
+#docker build -f="statsd/Dockerfile" -t="ezeev/statsd" .
+docker build -t wavefronthq/statsd https://github.com/wavefrontHQ/StatsD.git#master:docker
 
 echo Starting containers.
 

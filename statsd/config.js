@@ -97,10 +97,11 @@ Optional Variables:
   automaticConfigReload: whether to watch the config file and reload it when it
                          changes. The default is true. Set this to false to disable.
 */
-{
+{ 
   port: 8125
 , backends: ["./backends/wavefront"]
-, dumpMessages: true
-, wavefrontProxyServer: "192.168.99.100"
-, wavefrontProxyPort: 3878
+, wavefrontHost: '192.168.99.100'
+, wavefrontPort: 2878
+, wavefrontTagPrefix: '_t_'
+, defaultSource: "evan.macbook.dockerhost"
 }

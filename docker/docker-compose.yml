@@ -25,8 +25,7 @@ statsd:
     - "8125:8125/udp"
   volumes:
     - ../statsd/config.js:/opt/statsd/config.js
-    - ../statsd/backends/wavefront.js:/opt/statsd/backends/wavefront.js
-  image: ezeev/statsd
+  image: wavefronthq/statsd
 
 web01:
   container_name: web01
