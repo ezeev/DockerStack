@@ -24,8 +24,9 @@ statsd:
   ports:
     - "8125:8125/udp"
   volumes:
+    - /Users/evanpease/Development/wavefront-public/StatsD/backends/wavefront.js:/opt/statsd/backends/wavefront.js
     - ../statsd/config.js:/opt/statsd/config.js
-  image: wavefronthq/statsd
+  image: ezeev/statsd
 
 web01:
   container_name: web01
@@ -121,5 +122,11 @@ solr2:
   ports:
     - "8984:8983"
   command: bin/solr -f -c -z "zoo1:2181,zoo2:2181,zoo3:2181"
+  
+cass1:
+  image: ezeev/cassandra
+  container_name: cass1
+    
+  
   
   
