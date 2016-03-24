@@ -5,7 +5,7 @@ MAINTAINER Evan Pease: 0.1
 
 RUN apt-get install curl -y
 
-RUN bash -c "$(curl -sL https://goo.gl/c70QCx)" -h --proxy --server https://metrics.wavefront.com/api/ --token 393b1cc3-15ac-485b-b635-1ab7f8a2a2c3 --collectd --proxy_address localhost --proxy_port 4242 --overwrite_collectd_config
+RUN bash -c "$(curl -sL https://goo.gl/c70QCx)" -h --proxy --server https://metrics.wavefront.com/api/ --token YOUR-TOKEN --collectd --proxy_address localhost --proxy_port 4242 --overwrite_collectd_config
 
 RUN service collectd stop
 RUN service wavefront-proxy stop
